@@ -1097,7 +1097,9 @@ public class MyResource {
 			}
 		}
 		s += "]";
+		s += "}";
 		sDis +=  "]";
+		sDis += "}";
 
 		if (!search) {
 			Connection con = null;
