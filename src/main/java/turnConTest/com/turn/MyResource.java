@@ -995,6 +995,7 @@ public class MyResource {
 			getSetting();
 		}
 		// System.out.println("\nEmployee Table Details:");
+		String sDis = "";
 		String s = "{\"status\":";
 		if (checkL == 1)
 			s += true;
@@ -1005,6 +1006,7 @@ public class MyResource {
 		else
 			s += ",\"role\": \"0\"";
 		s += ",\"detail\":[";
+		sDis = s;
 		// tb.addRow("EmployeeID", "EmployeeName", "CheckInTime", "Total", "Total_Turn",
 		// "Is_Working", "Status", "Position", "Turn_List", "Index_Group");
 		int k = 0;
@@ -1012,55 +1014,90 @@ public class MyResource {
 		for (int j = 0; j < employee.size(); j++) {
 			for (int i = 0; i < employee.get(j).size(); i++) {
 				int index = i;
-				if (l > 0)
+				if (l > 0) {
 					s += ",";
+					sDis += ",";
+				}
 				s += "{";
+				sDis += "{";
 				l++;
 				s += "\"id\" : \"" + employee.get(j).get(index).getEmployeeID() + "\",";
+				sDis += "\"id\" : \"" + employee.get(j).get(index).getEmployeeID() + "\",";
 				s += "\"name\" : \"" + employee.get(j).get(index).getEmpName() + "\",";
-				if (employee.get(j).get(index).getPass() == null)
+				sDis+= "\"name\" : \"" + employee.get(j).get(index).getEmpName() + "\",";
+				if (employee.get(j).get(index).getPass() == null) {
 					s += "\"pass\" : \"n_u_l_l\",";
-				else
+					sDis+= "\"pass\" : \"n_u_l_l\",";
+				}
+				else {
 					s += "\"pass\" : \"" + employee.get(j).get(index).getPass() + "\",";
+					sDis+= "\"pass\" : \"" + employee.get(j).get(index).getPass() + "\",";
+				}
 				s += "\"sortOrder\" : \"" + employee.get(j).get(index).getPosition() + "\",";
+				sDis+=  "\"sortOrder\" : \"" + employee.get(j).get(index).getPosition() + "\",";
 				s += "\"turn\" : \"" + employee.get(j).get(index).getTotalTurn() + "\",";
+				sDis+= "\"turn\" : \"" + "---" + "\",";
 				s += "\"status\" : \"" + ((employee.get(j).get(index).isActive()) ? "1" : "0") + "\",";
+				sDis+= "\"status\" : \"" + ((employee.get(j).get(index).isActive()) ? "1" : "0") + "\",";
 				s += "\"working\" : \"" + ((employee.get(j).get(index).isIsWorking()) ? "1" : "0") + "\",";
+				sDis+= "\"working\" : \"" + ((employee.get(j).get(index).isIsWorking()) ? "1" : "0") + "\",";
 				s += "\"loginTime\" : \"" + dtf.format(employee.get(j).get(index).getCheckInTime()) + "\",";
-				if (employee.get(j).get(index).getLstTime() == null)
+				sDis+= "\"loginTime\" : \"" + dtf.format(employee.get(j).get(index).getCheckInTime()) + "\",";
+				if (employee.get(j).get(index).getLstTime() == null) {
 					s += "\"lstTime\" : \"" + "Not working\",";
-				else
+					sDis+=  "\"lstTime\" : \"" + "Not working\",";
+				}
+				else {
 					s += "\"lstTime\" : \"" + dtf.format(employee.get(j).get(index).getLstTime()) + "\",";
+					sDis+= "\"lstTime\" : \"" + dtf.format(employee.get(j).get(index).getLstTime()) + "\",";
+				}
 				s += "\"workHis\" : [";
+				sDis+= "\"workHis\" : [";
 				k = 0;
 				int lateMoney = 0;
 				for (WorkHis work : employee.get(j).get(index).getTurnListD()) {
 					if (k == 0) {
 						s += "{";
+						sDis+=  "{";
 						k++;
-					} else
+					} else {
 						s += ",{";
+						sDis+= ",{";
+					}
 					if("Comming late".equals(work.getName())) {
 						lateMoney =(int) work.getMoney();
 					}
 					s += "\"id\" : \"" + work.getId() + "\",";
+					sDis+= "\"id\" : \"" + work.getId() + "\",";
 					s += "\"name\" : \"" + work.getName() + "\",";
+					sDis+= "\"name\" : \"" + work.getName() + "\",";
 					s += "\"free\" : \"" + ((work.isTurn()) ? "1" : "0") + "\",";
+					sDis+= "\"free\" : \"" + ((work.isTurn()) ? "1" : "0") + "\",";
 					s += "\"money\" : \"" + work.getMoney() + "\",";
+					sDis+=  "\"money\" : \"" + work.getMoney() + "\",";
 					s += "\"workTime\" : \"" + (work.getWorkTime() == null ? "-" : work.getWorkTime()) + "\",";
+					sDis+= "\"workTime\" : \"" + (work.getWorkTime() == null ? "-" : work.getWorkTime()) + "\",";
 					s += "\"startTime\" : \"" + (work.getStartTime() == null ? "-" : work.getStartTime()) + "\"";
+					sDis+= "\"startTime\" : \"" + (work.getStartTime() == null ? "-" : work.getStartTime()) + "\"";
 					s += "}";
+					sDis+=  "}";
 				}
 				s += "],";
-				if(lateMoney > 0)
+				sDis+=  "],";
+				if(lateMoney > 0) {
 					s += "\"turnAll\" : \"" + employee.get(j).get(index).getTotal() + "/" + lateMoney + "\"";
-				else
+					sDis+=  "\"turnAll\" : \"" + "---" + "/" + lateMoney + "\"";
+				}
+				else {
 					s += "\"turnAll\" : \"" + employee.get(j).get(index).getTotal() + "\"";
+					sDis+= "\"turnAll\" : \"" + "---" + "\"";
+				}
 				s += "}";
+				sDis+=  "}";
 			}
 		}
 		s += "]";
-		s += "}";
+		sDis +=  "]";
 
 		if (!search) {
 			Connection con = null;
@@ -1088,6 +1125,6 @@ public class MyResource {
 			}
 		}
 
-		return s;
+		return sDis;
 	}
 }
